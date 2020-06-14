@@ -213,6 +213,7 @@ incsrc elder.asm
 incsrc toast.asm
 incsrc darkroomitems.asm
 incsrc multiworld.asm
+incsrc doorrando.asm
 warnpc $A58000
 
 ;org $228000 ; contrib area
