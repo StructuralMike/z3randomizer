@@ -129,13 +129,13 @@ org OnDrawHud_DrHudOverride ; <- 6FC4C - headsup_display.asm : 836 (LDA $7EF36E 
 jsl DrHudOverride
 org $0ded04 ; <- rando's hooks.asm line 2192 - 6ED04 - equipment.asm : 1963 (REP #$30)
 jsl DrHudDungeonItemsAdditions
-org $098638 ; rando's hooks.asm line 2192
-jsl CountChestKeys
+;org $098638 ; rando's hooks.asm line 2192
+;jsl CountChestKeys
 org $06D192 ; rando's hooks.asm line 457
 jsl CountAbsorbedKeys
 ; rando's hooks.asm line 1020
-org $05FC7E ; <- 2FC7E - sprite_dash_item.asm : 118 (LDA $7EF36F : INC A : STA $7EF36F)
-jsl CountBonkItem
+;org $05FC7E ; <- 2FC7E - sprite_dash_item.asm : 118 (LDA $7EF36F : INC A : STA $7EF36F)
+;jsl CountBonkItem
 
 ; These two, if enabled together, have implications for vanilla BK doors in IP/Hera/Mire
 ; IPBJ is common enough to consider not doing this. Mire is not a concern for vanilla - maybe glitched modes
