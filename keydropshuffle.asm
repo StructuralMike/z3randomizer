@@ -5,7 +5,7 @@ org $06d049 ; <- 35049 sprite_absorbable : 31-32 (JSL Sprite_DrawRippleIfInWater
 jsl SpriteKeyDrawGFX : bra + : nop : +
 
 org $06d180
-jsl BigKeyGet : bcs $07
+jsl BigKeyGet : bcs $07 : nop #5
 
 org $06d18d ; <- 3518D - sprite_absorbable.asm : 274 (LDA $7EF36F : INC A : STA $7EF36F)
 jsl KeyGet
@@ -138,7 +138,8 @@ KeyGet:
 BigKeyGet:
 {
     lda.l ShuffleKeyDrops : bne +
-        - stz $02e9 : ldy.b #$32 : phx ; what we wrote over
+        - stz $02e9 : ldy.b #$32 ; what we wrote over
+		phx : jsl Link_ReceiveItem : plx ; what we wrote over
         clc : rtl
     +
     ldy $0e80, x
