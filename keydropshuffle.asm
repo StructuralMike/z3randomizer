@@ -69,22 +69,52 @@ db $ff, $00, $ff
 KeyTable:
 db $a0, $a0, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, $aa, $ab, $ac, $ad
 
+KeyDropItemEncrypted:
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+
+KeyDropPlayerEncrypted:
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+db $00, $00, $00, $00, $00, $00, $00, $00
+
+
 SpriteKeyPrep:
 {
     lda $0b9b : sta $0cba, x ; what we wrote over
     pha
-        lda.l ShuffleKeyDrops : beq +
-        phx
+		lda.l ShuffleKeyDrops : bne + : pla : rtl : + phx
+		lda.l IsEncrypted : beq .decrypted
+			ldx #$ff
+			- inx #1 : lda.l LootTable, x : cmp #$ff : beq ++ : cmp $a0 : bne -
+			php : rep #$30 : lda $00 : pha : lda $02 : pha
+				lda.w #KeyDropPlayerEncrypted : sta $00
+				lda.w #KeyDropPlayerEncrypted>>16 : sta $02
+				txa : jsl RetrieveValueFromEncryptedTable : and.w #$00FF : sta !MULTIWORLD_SPRITEITEM_PLAYER_ID
+				
+				lda.w #KeyDropItemEncrypted : sta $00
+				lda.w #KeyDropItemEncrypted>>16 : sta $02
+				txa : jsl RetrieveValueFromEncryptedTable : and.w #$00FF
+			plx : stx $02 : plx : stx $00 : plp
+			bra ++++
+	
+		.decrypted
             ldx #$fd
             - inx #3 : lda.l LootTable, x : cmp #$ff : beq ++ : cmp $a0 : bne -
             inx : lda.l LootTable, x : sta !MULTIWORLD_SPRITEITEM_PLAYER_ID
             inx : lda.l LootTable, x
-                plx : sta $0e80, x
+                ++++ plx : sta $0e80, x
                 cmp #$24 : bne +++
                 	lda $a0 : cmp #$80 : bne + : lda #$24
                 +++ jsl PrepDynamicTile : bra +
         ++ plx : lda #$24 : sta $0e80, x
-    + pla
+
+	pla
     rtl
 }
 
@@ -152,6 +182,20 @@ BigKeyGet:
 KeyGetPlayer:
 {
     phx
+		lda.l IsEncrypted : beq .decrypted
+		ldx #$ff
+		- inx #1 : lda.l LootTable, x : cmp #$ff : beq ++ : cmp $a0 : bne -
+		
+		++ php : rep #$30 : lda $00 : pha : lda $02 : pha
+			lda.w #KeyDropPlayerEncrypted : sta $00
+			lda.w #KeyDropPlayerEncrypted>>16 : sta $02
+			txa : jsl RetrieveValueFromEncryptedTable : and.w #$00FF
+		plx : stx $02 : plx : stx $00 : plp
+		
+		plx
+		rts
+	
+	.decrypted
         ldx #$fd
         - inx #3 : lda.l LootTable, x : cmp #$ff : beq ++ : cmp $a0 : bne -
         ++ inx : lda.l LootTable, x
