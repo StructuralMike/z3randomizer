@@ -15,6 +15,9 @@ LoadRoomHook:
     dl IcePalaceBombosNE ; 03
     dl CastleEastEntrance ; 04
     dl CastleWestEntrance ; 05
+    dl PoDFallingBridge ; 06
+    dl PoDArena ; 07
+    dl MireBKPond ; 08
 
 NoCallback:
     RTL
@@ -145,10 +148,138 @@ CastleWestEntrance:
     SEP #$20 ; 8 A
     RTL
 
+PoDFallingBridge:
+	LDA.l DRFlags : AND #$10 : BNE + : RTL : +
+
+	REP #$20 ; 16 A
+	LDA.w #$08e1  ; square peg
+	%writeTileAt(5,7,0,1)
+	%writeTileAt(11,7,0,1)
+	INC ;horizontal rail
+	%writeTileAt(6,7,0,1)
+	%writeTileAt(7,7,0,1)
+	%writeTileAt(8,7,0,1)
+	%writeTileAt(9,7,0,1)
+	%writeTileAt(10,7,0,1)
+	SEP #$20 ; 8 A
+
+	REP #$20 ; 16 A
+	LDA.w #$08e0 ; corner top left
+	%writeTileAt(5,6,0,1)
+	%writeTileAt(10,6,0,1)
+	LDA.w #$48e0 ; corner top right
+	%writeTileAt(6,6,0,1)
+	%writeTileAt(11,6,0,1)
+	LDA.w #$08f4 ; top mid
+	%writeTileAt(7,6,0,1)
+	%writeTileAt(8,6,0,1)
+	%writeTileAt(9,6,0,1)
+
+	LDA.w #$08f1 ; corner mid left
+	%writeTileAt(5,7,0,1)
+	%writeTileAt(10,7,0,1)
+	LDA.w #$48f1 ; corner mid right
+	%writeTileAt(6,7,0,1)
+	%writeTileAt(11,7,0,1)
+	LDA.w #$08f2 ; mid mid
+	%writeTileAt(7,7,0,1)
+	%writeTileAt(8,7,0,1)
+	%writeTileAt(9,7,0,1)
+
+	LDA.w #$08e4 ; corner lower left
+	%writeTileAt(5,8,0,1)
+	%writeTileAt(10,8,0,1)
+	LDA.w #$48e4 ; corner lower right
+	%writeTileAt(6,8,0,1)
+	%writeTileAt(11,8,0,1)
+	LDA.w #$08e5 ; lower mid
+	%writeTileAt(7,8,0,1)
+	%writeTileAt(8,8,0,1)
+	%writeTileAt(9,8,0,1)
+	SEP #$20 ; 8 A
+	RTL
+
+;08e0 48e0 08f4 08f4 08e0 48e0
+;08f1 48f1 08f2 08f2 08f1 48f1
+;08e4 48e4 08e5 08e5 08e4 48e4
+;
+;(54,42) 22,10,1,1  42 85 2720 2742 156C
+;(54,43) 22,11,1,1  43 87 2784 2806 15EC
+;(54,44) 22,12,1,1  44 89 2848 2870 166C
+PoDArena:
+	LDA.l DRFlags : AND #$10 : BNE + : RTL : +
+
+	REP #$20 ; 16 A
+	LDA.w #$08e0 ; corner top left
+	%writeTileAt(22,10,1,1)
+	%writeTileAt(25,10,1,1)
+	LDA.w #$48e0 ; corner top right
+	%writeTileAt(23,10,1,1)
+	%writeTileAt(26,10,1,1)
+	LDA.w #$08f4 ; top mid
+	%writeTileAt(24,10,1,1)
+
+	LDA.w #$08f1 ; corner mid left
+	%writeTileAt(22,11,1,1)
+	%writeTileAt(25,11,1,1)
+	LDA.w #$48f1 ; corner mid right
+	%writeTileAt(23,11,1,1)
+	%writeTileAt(26,11,1,1)
+	LDA.w #$08f2 ; mid mid
+	%writeTileAt(24,11,1,1)
+
+	LDA.w #$08e4 ; corner lower left
+	%writeTileAt(22,12,1,1)
+	%writeTileAt(25,12,1,1)
+	LDA.w #$48e4 ; corner lower right
+	%writeTileAt(23,12,1,1)
+	%writeTileAt(26,12,1,1)
+	LDA.w #$08e5 ; lower mid
+	%writeTileAt(24,12,1,1)
+	SEP #$20 ; 8 A
+	RTL
+
+MireBKPond:
+	LDA.l DRFlags : AND #$10 : BNE + : RTL : +
+
+	REP #$20 ; 16 A
+	LDA.w #$08e0 ; corner top left
+	%writeTileAt(13,11,1,1)
+	%writeTileAt(17,11,1,1)
+	LDA.w #$48e0 ; corner top right
+	%writeTileAt(14,11,1,1)
+	%writeTileAt(18,11,1,1)
+	LDA.w #$08f4 ; top mid
+	%writeTileAt(15,11,1,1)
+	%writeTileAt(16,11,1,1)
+
+	LDA.w #$08f1 ; corner mid left
+	%writeTileAt(13,12,1,1)
+	%writeTileAt(17,12,1,1)
+	LDA.w #$48f1 ; corner mid right
+	%writeTileAt(14,12,1,1)
+	%writeTileAt(18,12,1,1)
+	LDA.w #$08f2 ; mid mid
+	%writeTileAt(15,12,1,1)
+	%writeTileAt(16,12,1,1)
+
+	LDA.w #$08e4 ; corner lower left
+	%writeTileAt(13,13,1,1)
+	%writeTileAt(17,13,1,1)
+	LDA.w #$48e4 ; corner lower right
+	%writeTileAt(14,13,1,1)
+	%writeTileAt(18,13,1,1)
+	LDA.w #$08e5 ; lower mid
+	%writeTileAt(15,13,1,1)
+	%writeTileAt(16,13,1,1)
+	SEP #$20 ; 8 A
+	RTL
+
 RoomCallbackTable:
+    ;    0    1    2    3	 4    5    6    7    8    9    A    B    C    D    E    F
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $01, $00 ; 00x
-    db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 01x
-    db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 02x
+    db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $06, $00, $00, $00, $00, $00 ; 01x
+    db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $07, $00, $00, $00, $00, $00 ; 02x
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 03x
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 04x
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 05x
@@ -159,7 +290,7 @@ RoomCallbackTable:
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 0Ax
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 0Bx
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 0Cx
-    db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $03, $00 ; 0Dx
+    db $00, $08, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $03, $00 ; 0Dx
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 0Ex
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 0Fx
     db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00 ; 0Fx
