@@ -49,8 +49,9 @@ MirrorCheckOverride:
     rtl
     + lda.l DRScroll : rtl
 
-MirrorCheckOverride2:
-    lda $7ef353 : and #$02 : rtl
+;moved to base rom
+;MirrorCheckOverride2:
+;    lda $7ef353 : and #$02 : rtl
 
 
 BlockEraseFix:

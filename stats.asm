@@ -55,30 +55,7 @@
 ;--------------------------------------------------------------------------------
 ; $7EF433 - locations before mirror
 ;--------------------------------------------------------------------------------
-; $7EF434 - hhhhdddd - item locations checked
-; h - hyrule castle
-; d - palace of darkness
-;--------------------------------------------------------------------------------
-; $7EF435 - dddhhhaa - item locations checked
-; d - desert palace
-; h - tower of hera
-; a - agahnim's tower
-;--------------------------------------------------------------------------------
-; $7EF436 - gggggeee - item locations checked
-; g - ganon's tower
-; e - eastern palace
-;--------------------------------------------------------------------------------
-; $7EF437 - sssstttt - item locations checked
-; s - skull woods
-; t - thieves town
-;--------------------------------------------------------------------------------
-; $7EF438 - iiiimmmm - item locations checked
-; i - ice palace
-; m - misery mire
-;--------------------------------------------------------------------------------
-; $7EF439 - ttttssss - item locations checked
-; t - turtle rock
-; s - swamp palace
+; $7EF434-7EF439 - free space
 ;--------------------------------------------------------------------------------
 ; $7EF43A - times mirrored outdoors
 ;--------------------------------------------------------------------------------
@@ -136,6 +113,8 @@
 ; $7EF464w[2] - mirror timestamp (low)
 ;--------------------------------------------------------------------------------
 ; $7EF466w[2] - mirror timestamp (high)
+;--------------------------------------------------------------------------------
+; $7EF4C0 - 7EF4CF - locations checked, indexed by 040C >> 1
 ;--------------------------------------------------------------------------------
 
 ;--------------------------------------------------------------------------------
@@ -262,17 +241,17 @@ CountChestKeyLong: ; called from ItemDowngradeFix in itemdowngrade.asm
 RTL
 ;--------------------------------------------------------------------------------
 CountChestKey: ; called by neighbor functions
-	PHA : PHX
-		lda !MULTIWORLD_ITEM_PLAYER_ID : bne .end
-		CPY #$24 : BEQ +  ; small key for this dungeon - use $040C
-		CPY #$A0 : !BLT .end ; Ignore most items
-		CPY #$AE : !BGE .end ; Ignore reserved key and generic key
-		TYA : AND.B #$0F : BNE ++ ; If this is a sewers key, instead count it as an HC key
-			INC
-		++ TAX : BRA .count  ; use Key id instead of $040C (Keysanity)
-		+ LDA $040C : LSR : TAX
-		.count
-		LDA $7EF4E0, X : INC : STA $7EF4E0, X
+    PHA : PHX
+        lda !MULTIWORLD_ITEM_PLAYER_ID : bne .end
+        CPY #$24 : BEQ +  ; small key for this dungeon - use $040C
+        CPY #$A0 : !BLT .end ; Ignore most items
+        CPY #$AE : !BGE .end ; Ignore reserved key and generic key
+        TYA : AND.B #$0F : BNE ++ ; If this is a sewers key, instead count it as an HC key
+            INC
+        ++ TAX : BRA .count  ; use Key id instead of $040C (Keysanity)
+        + LDA $040C : LSR : TAX
+        .count
+        LDA $7EF4E0, X : INC : STA $7EF4E0, X
    .end
 	PLX : PLA
 RTS
