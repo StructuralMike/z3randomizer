@@ -11,9 +11,10 @@ DrawDungeonCompassCounts:
 		BNE + : RTL : + ; skip if we don't have compass
 	++
 
-	LDA $040C : LSR : TAX
-
-	LDA.l CompassTotal, X : AND #$00FF
+	LDA $040C : LSR
+	BNE +
+		INC
+	+ TAX : LDA.l CompassTotal, X : AND #$00FF
 	SEP #$20
 	JSR HudHexToDec2Digit
 	REP #$20
@@ -22,7 +23,7 @@ DrawDungeonCompassCounts:
 		LDX.b $07 : TXA : ORA #$2400 : STA $7EC79C
 	PLX
 
-	LDA $7EF4C0, X : AND #$00FF
+	LDA $7EF4BF, X : AND #$00FF
 	SEP #$20
 	JSR HudHexToDec2Digit
 	REP #$20

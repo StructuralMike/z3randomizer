@@ -223,7 +223,8 @@ IncrementSmallKeysNoPrimary:
 		LDA $1B : BEQ + ; skip room check if outdoors
 			PHP : REP #$20 ; set 16-bit accumulator
 				LDA $048E : CMP.w #$0087 : BNE ++ ; hera basement
-					PLP : PHY : LDY.b #24 : JSL.l FullInventoryExternal : PLY : BRA +
+					PLP : PHY : LDY.b #24 : JSL.l FullInventoryExternal
+					JSR CountChestKey : PLY : BRA +
 				++
 			PLP
 		+

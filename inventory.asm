@@ -316,11 +316,14 @@ AddInventory:
 	SEP #$20 ; Set 8-bit Accumulator
 
 	LDA $040C ; get dungeon id
+	BNE +
+		INC #2 ; treat sewers as HC
+	+ CMP #$FF : BEQ .fullItemCounts
 
 	CMP.l BallNChainDungeon : BNE +
 		CPY.b #$32 : BNE +
 		BRL .fullItemCounts
-	+ LSR : TAX : LDA $7EF4C0, X : INC : STA $7EF4C0, X
+	+ LSR : TAX : LDA $7EF4BF, X : INC : STA $7EF4BF, X
 	CPX.b #$0D : BNE +
 		LDA $7EF366 : AND #$04 : BNE ++
 			JSR .incrementGTowerPreBigKey
