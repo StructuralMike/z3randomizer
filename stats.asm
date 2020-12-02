@@ -242,17 +242,21 @@ CountChestKeyLong: ; called from ItemDowngradeFix in itemdowngrade.asm
 RTL
 ;--------------------------------------------------------------------------------
 CountChestKey: ; called by neighbor functions
-    PHA : PHX
-        lda !MULTIWORLD_ITEM_PLAYER_ID : bne .end
-        CPY #$24 : BEQ +  ; small key for this dungeon - use $040C
-        CPY #$A0 : !BLT .end ; Ignore most items
-        CPY #$AE : !BGE .end ; Ignore reserved key and generic key
-        TYA : AND.B #$0F : BNE ++ ; If this is a sewers key, instead count it as an HC key
-            INC
-        ++ TAX : BRA .count  ; use Key id instead of $040C (Keysanity)
-        + LDA $040C : LSR : TAX
-        .count
-        LDA $7EF4E0, X : INC : STA $7EF4E0, X
+	PHA : PHX
+		LDA !MULTIWORLD_ITEM_PLAYER_ID : bne .end
+		CPY #24 : BEQ + ; hera basement key
+		CPY #$24 : BEQ +  ; small key for this dungeon - use $040C
+			CPY #$A0 : !BLT .end ; Ignore most items
+			CPY #$AE : !BGE .end ; Ignore reserved key and generic key
+			TYA : AND.B #$0F : BNE ++ ; If this is a sewers key, instead count it as an HC key
+				INC
+			++ TAX : BRA .count  ; use Key id instead of $040C (Keysanity)
+		+ LDA $040C : LSR
+		BNE +
+			INC ; combines HC and Sewer counts
+		+ TAX
+		.count
+		LDA $7EF4E0, X : INC : STA $7EF4E0, X
    .end
 	PLX : PLA
 RTS
