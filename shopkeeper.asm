@@ -204,20 +204,20 @@ SpritePrep_ShopKeeper:
 	BRL -
 	.stop
 	
-	;LDA $A0 : CMP.b #$FF : BNE .normal
-	;.dumb
-	;	LDA $2137
-	;	LDA $213F
-	;	LDA $213D
-	;	CMP.b #60
-	;	!BLT .dumb
-	;.normal
-	;LDA #$80 : STA $2100
-	;JSR Shopkeeper_UploadVRAMTiles
-	;LDA #$0F : STA $2100
-	LDA.b #Shopkeeper_UploadVRAMTilesLong>>16 : STA !NMI_AUX+2
-	LDA.b #Shopkeeper_UploadVRAMTilesLong>>8 : STA !NMI_AUX+1
-	LDA.b #Shopkeeper_UploadVRAMTilesLong>>0 : STA !NMI_AUX
+	LDA $A0 : CMP.b #$FF : BNE .normal
+	.dumb
+		LDA $2137
+		LDA $213F
+		LDA $213D
+		CMP.b #60
+		!BLT .dumb
+	.normal
+	LDA #$80 : STA $2100
+	JSR Shopkeeper_UploadVRAMTiles
+	LDA #$0F : STA $2100
+;	LDA.b #Shopkeeper_UploadVRAMTilesLong>>16 : STA !NMI_AUX+2
+;	LDA.b #Shopkeeper_UploadVRAMTilesLong>>8 : STA !NMI_AUX+1
+;	LDA.b #Shopkeeper_UploadVRAMTilesLong>>0 : STA !NMI_AUX
 
 	.done
 	LDA.l !SHOP_TYPE : BIT.b #$20 : BEQ .notTakeAll ; Take-all

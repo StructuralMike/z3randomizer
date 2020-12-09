@@ -216,14 +216,11 @@ RTL
 IncrementSmallKeysNoPrimary:
 	STA $7EF36F ; thing we wrote over, write small key count
 	PHX
-		LDA !LOCK_STATS : BNE +
-			JSL AddInventory_incrementKeyLong
-		+
 		JSL.l UpdateKeys
 		LDA $1B : BEQ + ; skip room check if outdoors
 			PHP : REP #$20 ; set 16-bit accumulator
 				LDA $048E : CMP.w #$0087 : BNE ++ ; hera basement
-					PLP : PHY : LDY.b #24 : JSL.l FullInventoryExternal
+					PLP : PHY : LDY.b #$24 : JSL.l FullInventoryExternal
 					JSR CountChestKey : PLY : BRA +
 				++
 			PLP
@@ -244,7 +241,6 @@ RTL
 CountChestKey: ; called by neighbor functions
 	PHA : PHX
 		LDA !MULTIWORLD_ITEM_PLAYER_ID : bne .end
-		CPY #24 : BEQ + ; hera basement key
 		CPY #$24 : BEQ +  ; small key for this dungeon - use $040C
 			CPY #$A0 : !BLT .end ; Ignore most items
 			CPY #$AE : !BGE .end ; Ignore reserved key and generic key

@@ -42,7 +42,6 @@ FrameHookAction:
 	PLP : PLA
 RTL
 ;--------------------------------------------------------------------------------
-!NMI_AUX = "$7F5044"
 NMIHookAction:
 	PHA : PHX : PHY : PHD ; thing we wrote over, push stuff
 

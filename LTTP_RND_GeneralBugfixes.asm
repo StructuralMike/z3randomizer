@@ -148,6 +148,7 @@ incsrc map.asm
 incsrc msu.asm
 incsrc dialog.asm
 incsrc entrances.asm
+incsrc clock.asm
 incsrc accessability.asm
 incsrc heartbeep.asm
 incsrc capacityupgrades.asm
@@ -195,7 +196,6 @@ incsrc retro.asm
 incsrc dpadinvert.asm
 incsrc boots.asm
 incsrc events.asm
-incsrc clock.asm
 incsrc fileselect.asm
 incsrc playername.asm
 incsrc decryption.asm
