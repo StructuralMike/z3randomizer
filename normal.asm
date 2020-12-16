@@ -128,6 +128,10 @@ LoadRoomVert:
 	jsr VertEdge : pla : bcs .end
 	sta $a0 : bra .end ; Restore normal room, abort (straight staircases and open edges can get in this routine)
 	.gtg ;Good to Go!
+	lda $06 : cmp #$ff : bne +
+	    lda $a0 : cmp #$43 : bne +
+	    lda $7ef086 : ora #$80 : sta $7ef086
+	+
 	pla ; Throw away normal room (don't fill up the stack)
 	lda $a0 : and.b #$F0 : lsr #3 : !sub $21 : !add $06 : sta $02
 	ldy #$01 : jsr ShiftVariablesMainDir
