@@ -125,6 +125,7 @@ RTS
 ;--------------------------------------------------------------------------------
 !TILE_UPLOAD_OFFSET_OVERRIDE = "$7F5042"
 !FREE_TILE_BUFFER = "#$1180"
+!SHOP_ENABLE_COUNT = "$7F504F"
 !SHOP_ID = "$7F5050"
 !SHOP_TYPE = "$7F5051"
 ;!SHOP_INVENTORY = "$7F5052" ; $7F5056 - 5a - 5e
@@ -137,6 +138,7 @@ RTS
 !SHOP_MERCHANT = "$7F506D"
 !SHOP_DMA_TIMER = "$7F506E"
 !SHOP_KEEP_REFILL = "$7F506F"
+
 ;--------------------------------------------------------------------------------
 !NMI_AUX = "$7F5044"
 ;--------------------------------------------------------------------------------
@@ -190,19 +192,6 @@ SpritePrep_ShopKeeper:
 			LDA.l ShopContentsTable+8, X : PHX : PHA
 			LDA #0 : XBA : TYA : LSR #2 : TAX ; This will convert the value back to the slot number (in 8-bit accumulator mode)
 			PLA : STA.l !SHOP_INVENTORY_PLAYER, X : LDA #0 : STA.l !SHOP_INVENTORY_DISGUISE, X : PLX
-			LDA.l EnableRetroSkipArrow : BEQ ++++
-			LDA.l ShopContentsTable+1, X : CMP #$43 : BNE ++++
-			LDA.l $7EF377 : BEQ ++++
-			LDA.l ShopContentsTable+4, X : BEQ ++++
-				--- ; assign alt item
-				LDA.l ShopContentsTable+5, X : PHX : TYX : STA.l !SHOP_INVENTORY, X : PLX
-				LDA.l ShopContentsTable+6, X : PHX : TYX : STA.l !SHOP_INVENTORY+1, X : PLX
-				LDA.l ShopContentsTable+7, X : PHX : TYX : STA.l !SHOP_INVENTORY+2, X : PLX
-				LDA #$40 : PHX : TYX : STA.l !SHOP_INVENTORY+3, X : PLX
-				PHX : LDA #0 : XBA : TYA : LSR #2 : TAX ; This will convert the value back to the slot number (in 8-bit accumulator mode)
-				LDA #0 : STA.l !SHOP_INVENTORY_PLAYER, X : PLX
-				BRA +++
-			++++
 			
 			PHY
 				PHX
@@ -212,14 +201,22 @@ SpritePrep_ShopKeeper:
 				
 				LDA.l ShopContentsTable+4, X : BEQ +
 				TYA : CMP.l ShopContentsTable+4, X : !BLT ++
-					PLY : BRA ---
+					PLY
+						LDA.l ShopContentsTable+5, X : PHX : TYX : STA.l !SHOP_INVENTORY, X : PLX
+						LDA.l ShopContentsTable+6, X : PHX : TYX : STA.l !SHOP_INVENTORY+1, X : PLX
+						LDA.l ShopContentsTable+7, X : PHX : TYX : STA.l !SHOP_INVENTORY+2, X : PLX
+						LDA #$40 : PHX : TYX : STA.l !SHOP_INVENTORY+3, X : PLX
+						PHX : LDA #0 : XBA : TYA : LSR #2 : TAX ; This will convert the value back to the slot number (in 8-bit accumulator mode)
+						LDA #0 : STA.l !SHOP_INVENTORY_PLAYER, X : PLX
+						BRA +++
 					+ : PLY : LDA #$40 : PHX : TYX : STA.l !SHOP_INVENTORY+3, X : PLX : BRA +++
 					++ : PLY : +++
 				
 
 			PHX : PHY
 				PHX : TYX : LDA.l !SHOP_INVENTORY, X : PLX
-				CMP #$B0 : BNE +
+				CMP #$5A : BEQ ++
+				CMP #$B0 : BNE + : ++
 					PHX : LDA #0 : XBA : TYA : LSR #2 : TAX ; This will convert the value back to the slot number (in 8-bit accumulator mode)
 					JSL GetRandomInt : AND #$3F : STA !BEE_TRAP_DISGUISE
 					BNE ++ : LDA #$49 : ++ : CMP #$26 : BNE ++ : LDA #$6A : ++ ; if 0 (fighter's sword + shield), set to just sword, if filled container (bugged palette), switch to triforce piece
@@ -560,6 +557,8 @@ Shopkeeper_SetupHitboxes:
 	
 	PLP : PLY : PLX
 RTS
+!LOCK_STATS = "$7EF443"
+!ITEM_TOTAL = "$7EF423"
 ;--------------------
 ;!SHOP_STATE
 Shopkeeper_BuyItem:
@@ -598,9 +597,17 @@ Shopkeeper_BuyItem:
 				REP #$20 : LDA $7EF360 : !SUB !SHOP_INVENTORY+1, X : STA $7EF360 : SEP #$20 ; Take price away
 			++
 		.buy_real
-			PHX : LDA #0 : XBA : TXA : LSR #2 : TAX : LDA.l !SHOP_INVENTORY_PLAYER, X : STA !MULTIWORLD_ITEM_PLAYER_ID : PLX
+			print "Shop Check: ", pc
+			PHX
+				LDA #0 : XBA : TXA : LSR #2 : TAX : LDA.l !SHOP_INVENTORY_PLAYER, X : STA !MULTIWORLD_ITEM_PLAYER_ID
+				TXA : !ADD !SHOP_SRAM_INDEX : TAX
+				LDA.l !SHOP_PURCHASE_COUNTS, X : BNE +++	;Is this the first time buying this slot?
+				LDA.l EnableShopItemCount, X : STA.l !SHOP_ENABLE_COUNT ; If so, store the permission to count the item here.
+				+++
+			PLX
 			LDA.l !SHOP_INVENTORY, X : TAY : JSL.l Link_ReceiveItem
 			LDA.l !SHOP_INVENTORY+3, X : INC : STA.l !SHOP_INVENTORY+3, X
+			LDA.b #0 : STA.l !SHOP_ENABLE_COUNT
 			
 			TXA : LSR #2 : TAX
 			LDA !SHOP_TYPE : BIT.b #$80 : BNE +
@@ -609,7 +616,27 @@ Shopkeeper_BuyItem:
 				+++
 				PHX
 					TXA : !ADD !SHOP_SRAM_INDEX : TAX
+
 					LDA !SHOP_PURCHASE_COUNTS, X : INC : BEQ +++ : STA !SHOP_PURCHASE_COUNTS, X : +++
+					
+					LDA.l RetroArrowShopBoughtMask, X : BEQ ++++ ; Confirm purchase was of a retro single arrow slot.
+					LDA.l RetroArrowShopList : PHX : TAX : LDA.l !SHOP_PURCHASE_COUNTS, X : BEQ +++ : PLX : BRA ++++ : +++ : PLX ; Check to see if all shop locationss already marked.
+					
+					LDA.l RetroArrowShopBoughtMask, X : BEQ ++++ : ORA.l !SHOP_STATE : STA.l !SHOP_STATE ; Prevent purchase of other single arrows in same shop.
+					LDX #$00
+					- LDA.l RetroArrowShopList, X : BMI ++++ ; If end of list, stop here.
+						PHX : TAX
+							LDA !SHOP_PURCHASE_COUNTS, X : BNE +++
+							INC : STA !SHOP_PURCHASE_COUNTS, X
+							
+							LDA !LOCK_STATS : BNE +++
+							LDA.l EnableShopItemCount, X : BEQ +++
+							REP #$20 : LDA !ITEM_TOTAL : INC : STA !ITEM_TOTAL : SEP #$20
+						+++
+						PLX
+						INX
+					BRA -
+					++++
 				PLX
 				BRA ++
 			+ ; Take-any
@@ -617,11 +644,17 @@ Shopkeeper_BuyItem:
 				BIT.b #$20 : BNE .takeAll
 				.takeAny
 					LDA.l !SHOP_STATE : ORA.b #$07 : STA.l !SHOP_STATE
-					PHX : LDA.l !SHOP_SRAM_INDEX : TAX : LDA.b #$01 : STA.l !SHOP_PURCHASE_COUNTS, X : PLX
+					PHX
+						LDA.l !SHOP_SRAM_INDEX : TAX : LDA.b #$01 : STA.l !SHOP_PURCHASE_COUNTS, X
+						LDA.l EnableShopItemCount, X : STA.l !SHOP_ENABLE_COUNT
+					PLX
 					BRA ++
 				.takeAll
 					LDA.l !SHOP_STATE : ORA.w Shopkeeper_ItemMasks, X : STA.l !SHOP_STATE
-					PHX : LDA.l !SHOP_SRAM_INDEX : TAX : LDA.l !SHOP_STATE : STA.l !SHOP_PURCHASE_COUNTS, X : PLX
+					PHX
+						LDA.l !SHOP_SRAM_INDEX : TAX : LDA.l !SHOP_STATE : STA.l !SHOP_PURCHASE_COUNTS, X
+						LDA.l EnableShopItemCount, X : STA.l !SHOP_ENABLE_COUNT
+					PLX
 			++
 			; JSL SpritePrep_ShopKeeper ;; reloads entire shop again
 	.done
