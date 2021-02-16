@@ -95,6 +95,7 @@ RTL
 OnFileLoad:
 	REP #$10 ; set 16 bit index registers
 	JSL.l EnableForceBlank ; what we wrote over
+	REP #$20 : LDA.l $30F010 : STA.l $7EF33E : SEP #$20
 
 	LDA.b #$07 : STA $210c ; Restore screen 3 to normal tile area
 
