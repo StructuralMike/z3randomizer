@@ -6,14 +6,16 @@
 ;--------------------------------------------------------------------------------
 IncrementBombs:
     LDA !BOMB_UPGRADES ; get bomb upgrades
-	!ADD.l StartingMaxBombs : DEC
+	!ADD.l StartingMaxBombs : BEQ + ; skip if we can't have bombs
+		DEC
 
-    CMP !BOMB_CURRENT
-	
-	!BLT +
-    	LDA !BOMB_CURRENT
-		CMP.b #99 : !BGE +
-		INC : STA !BOMB_CURRENT
+		CMP !BOMB_CURRENT
+		
+		!BLT +
+			LDA !BOMB_CURRENT
+			CMP.b #99 : !BGE +
+			INC : STA !BOMB_CURRENT
+		+
 	+
 RTL
 ;--------------------------------------------------------------------------------
