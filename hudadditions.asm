@@ -1,5 +1,6 @@
 DrHudOverride:
 {
+	print "DrHudOverride: ", pc
 	jsl.l NewDrawHud
 	jsr HudAdditions
 	rtl
@@ -7,7 +8,15 @@ DrHudOverride:
 
 HudAdditions:
 {
-    lda.l DRFlags : and #$0008 : beq ++
+	print "Debug Counter: ", pc
+    lda.l DRFlags : and #$0008 : bne + : BRL ++ : +
+		LDA.l !GOAL_ELDER : AND.w #$FF : BNE +
+		LDA.l GoalItemFlags : AND.w #$0001 : BEQ +  ; check flag for hide until get triforce piece
+		LDA.l !GOAL_COUNTER : BNE + : BRL .debug_counter : + ; if zero, skip hud writing
+		LDA.l GoalItemRequirement : BNE + : BRL .debug_counter : + ; Star Meter
+		lda $1a : and #$0080 : beq ++	; Skip drawing debug counter entirely for 2 seconds, we need to render Triforce counter instead.
+		
+	.debug_counter
 		LDA.w #$28A4 : STA !GOAL_DRAW_ADDRESS
 		lda $7EF423
         jsr HudHexToDec4DigitCopy

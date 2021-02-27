@@ -63,11 +63,15 @@ SEP #$30
 !GOAL_DRAW_ADDRESS = "$7EC72A"
 ;================================================================================
 
+	print "Triforce Counter: ", pc
 	REP #$20
 	LDA.l !GOAL_ELDER : AND.w #$FF : BNE +
 	LDA.l GoalItemFlags : AND.w #$0001 : BEQ +  ; check flag for hide until get triforce piece
 	LDA.l !GOAL_COUNTER : BNE + : BRL .done : + ; if zero, skip hud writing
 	LDA.l GoalItemRequirement : BNE + : BRL .done : + ; Star Meter
+	
+	lda.l DRFlags : and #$0008 : beq +	;If debug counter is active, alternate between it, and triforce pieces every 128 frames.
+	lda $1a : and #$0080 : beq + : BRL .done : +
 	
 	LDA.l !GOAL_COUNTER
 	JSR HudHexToDec4Digit
