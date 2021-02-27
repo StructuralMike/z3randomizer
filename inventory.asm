@@ -1091,15 +1091,20 @@ RTL
 
 ;--------------------------------------------------------------------------------
 ; DrawMagicHeader:
+; $7EF37B = Number of magic upgrades
+; FuturoMagic: #$00 = NoStartingMaagic - #$01 = StartingMagic (default)
 ;--------------------------------------------------------------------------------
 DrawMagicHeader:
 	LDA $7EF37B : AND.w #$00FF : CMP.w #$0002 : BEQ .quarterMagic
+	LDA FuturoMagic : BEQ + ; Draw different hud on futuromagic
 	.halfMagic
     LDA.w #$28F7 : STA $7EC704
     LDA.w #$2851 : STA $7EC706
     LDA.w #$28FA : STA $7EC708
+	+
 RTL
 	.quarterMagic
+	LDA FuturoMagic : BEQ .halfMagic ; Draw different hud on futuromagic
     LDA.w #$28F7 : STA $7EC704
     LDA.w #$2800 : STA $7EC706
     LDA.w #$2801 : STA $7EC708

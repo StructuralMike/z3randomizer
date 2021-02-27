@@ -138,12 +138,15 @@ SEP #$30
 ; Draw Magic Meter
 !INFINITE_MAGIC = "$7F50CA"
 !DrawMagicMeter_mp_tilemap = "$0DFE0F" 
-;--------------------------------------------------------------------------------
+; FuturoMagic: #$00 = NoStartingMaagic - #$01 = StartingMagic (default)
+; $7EF37B
+;--------------------------------------------------------------------------------''
+
 	LDA $7EF36E : AND #$00FF ; crap we wrote over when placing the hook for OnDrawHud
 	!ADD #$0007
 	AND #$FFF8
 	TAX						 ; end of crap
-	
+
 	LDA !INFINITE_MAGIC : AND.w #$00FF : BNE + : BRL .green : +
 	SEP #$20 : LDA.b #$80 : STA $7EF36E : REP #$30 ; set magic to max
 	LDX.w #$0080 ; load full magic meter graphics

@@ -51,6 +51,8 @@ RTL
 ;--------------------------------------------------------------------------------
 !BUSY_MAGIC = $7F5093
 RefillMagic:
+	LDA FuturoMagic
+	!ADD.l $7EF37B : BEQ .itsFull ; No magic refill if we can't use magic
 	REP #$20 ; set 16-bit accumulator
 	LDA $A0 ; these are all decimal because i got them that way
 	CMP.w #279 : BNE + ; Spike Cave bottles work normally
