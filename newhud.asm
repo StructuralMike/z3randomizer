@@ -138,7 +138,7 @@ SEP #$30
 ; Draw Magic Meter
 !INFINITE_MAGIC = "$7F50CA"
 !DrawMagicMeter_mp_tilemap = "$0DFE0F" 
-; FuturoMagic: #$00 = NoStartingMaagic - #$01 = StartingMagic (default)
+; FuturoMagic: #$00 = NoStartingMagic - #$01 = StartingMagic (default)
 ; $7EF37B
 ;--------------------------------------------------------------------------------''
 
@@ -147,6 +147,8 @@ SEP #$30
 	AND #$FFF8
 	TAX						 ; end of crap
 
+	LDA FuturoMagic
+	!ADD.l $7EF37B : BNE + : RTL : + ; Lock magic meter graphics when we can't use magic
 	LDA !INFINITE_MAGIC : AND.w #$00FF : BNE + : BRL .green : +
 	SEP #$20 : LDA.b #$80 : STA $7EF36E : REP #$30 ; set magic to max
 	LDX.w #$0080 ; load full magic meter graphics
