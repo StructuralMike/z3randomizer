@@ -259,12 +259,17 @@ AddInventory:
 	+
 
 	; don't count any of this stuff
-	CPY.b #$20 : BNE + : BRL .itemCounts : +   ; Crystal
-	CPY.b #$26 : BNE + : BRL .itemCounts : +   ; Heart Piece Completion Heart
-	CPY.b #$37 : BNE + : BRL .itemCounts : +   ; Pendant
-	CPY.b #$38 : BNE + : BRL .itemCounts : +   ; Pendant
-	CPY.b #$39 : BNE + : BRL .itemCounts : +   ; Pendant
-	CPY.b #$00 : BNE + : BRL .itemCounts : +   ; Uncle Sword & Shield
+	CPY.b #$20 : BNE + : BRL .itemCounts : + ; Crystal
+	CPY.b #$26 : BNE + : BRL .itemCounts : + ; Heart Piece Completion Heart
+	LDA.l !SHOP_ENABLE_COUNT : BNE ++
+		CPY.b #$2E : BNE + : BRL .itemCounts : + ; Red Potion (Refill)
+		CPY.b #$2F : BNE + : BRL .itemCounts : + ; Green Potion (Refill)
+		CPY.b #$30 : BNE + : BRL .itemCounts : + ; Blue Potion (Refill)
+	++
+	CPY.b #$37 : BNE + : BRL .itemCounts : + ; Pendant
+	CPY.b #$38 : BNE + : BRL .itemCounts : + ; Pendant
+	CPY.b #$39 : BNE + : BRL .itemCounts : + ; Pendant
+	CPY.b #$00 : BNE + : BRL .itemCounts : + ; Uncle Sword & Shield
 	
 	CPY.b #$04 : !BLT .isSword ; Swords - Skip Shop/Fairy Check for Swords
 	CPY.b #$49 : BEQ .isSword
@@ -1001,8 +1006,10 @@ DrawPowder:
 		LDA #$00 : STA.l !REDRAW ; reset redraw flag
 		BRA .defer
 	+
-;	LDA $0DA0, X ; Retrieve stored item type
-;	JSL.l DrawDynamicTile
+	; this fights with the shopkeep code, so had to move the powder draw there when potion shop is custom
+	LDA !SHOP_TYPE : CMP.b #$FF : BNE .defer
+		LDA $0DA0, X ; Retrieve stored item type
+		JSL.l DrawDynamicTile
 	.defer
 RTL
 ;--------------------------------------------------------------------------------

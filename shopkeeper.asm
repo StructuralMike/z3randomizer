@@ -189,7 +189,7 @@ SpritePrep_ShopKeeper:
 			LDA.l ShopContentsTable+1, X : PHX : TYX : STA.l !SHOP_INVENTORY, X : PLX
 			LDA.l ShopContentsTable+2, X : PHX : TYX : STA.l !SHOP_INVENTORY+1, X : PLX
 			LDA.l ShopContentsTable+3, X : PHX : TYX : STA.l !SHOP_INVENTORY+2, X : PLX
-			LDA.l ShopContentsTable+8, X : PHX : PHA
+			LDA.l ShopContentsTable+8, X : PHX : PHA : STA.l !MULTIWORLD_SPRITEITEM_PLAYER_ID
 			LDA #0 : XBA : TYA : LSR #2 : TAX ; This will convert the value back to the slot number (in 8-bit accumulator mode)
 			PLA : STA.l !SHOP_INVENTORY_PLAYER, X : LDA #0 : STA.l !SHOP_INVENTORY_DISGUISE, X : PLX
 			
