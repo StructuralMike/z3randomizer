@@ -816,19 +816,15 @@ HeartContainer_Trinexx:
 ;================================================================================
 
 ;--------------------------------------------------------------------------------
-; 0x180163 - 0x180164 
+; 0x180163 - 0x180164 (unused)
 ;================================================================================
-org $308163 ; PC 0x180163-4
-GoalItemRequirement:
-dw #$0000 ; #$0000 = Off (default) - #$XXXX = Require $XXXX Goal Items - #$FFFF = Counter-Only
-
-org $308165 ; PC 0x180165-6
+org $308165 ; PC 0x180165
 GoalItemIcon:
 dw #$280E ; #$280D = Star - #$280E = Triforce Piece (default)
-
+;================================================================================
 org $308167 ; PC 0x180167
-GoalItemFlags:
-dw #$00 
+GoalItemRequirement:
+db #$00 ; #$00 = Off (default) - #$XX = Require $XX Goal Items - #$FF = Counter-Only
 ;================================================================================
 org $308168 ; PC 0x180168
 ByrnaCaveSpikeDamage:

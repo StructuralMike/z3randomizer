@@ -40,8 +40,7 @@ RTL
 
     Elder_Code:
     {
-        !GOAL_ELDER = "$7EF41A"
-        LDA GoalItemRequirement : ORA GoalItemRequirement+1 : BEQ .despawn
+        LDA GoalItemRequirement : BEQ .despawn
         LDA InvincibleGanon : CMP #$05 : BEQ .despawn
         LDA TurnInGoalItems : BNE +
             .despawn
@@ -53,15 +52,10 @@ RTL
         LDY.b #$01
         
         JSL Sprite_ShowSolicitedMessageIfPlayerFacing_PreserveMessage : BCC .dont_show
-            REP #$20
-            LDA.l !GOAL_COUNTER 
-            CMP.l GoalItemRequirement : !BLT +
-                SEP #$20
+            LDA !GOAL_COUNTER 
+            CMP GoalItemRequirement : !BLT +
                 JSL.l ActivateGoal
             +
-            SEP #$20
-            LDA #$01
-            STA.l !GOAL_ELDER
         .dont_show
         
         .done

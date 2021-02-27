@@ -169,15 +169,14 @@ ProcessEventItems:
 			JSL.l LoadDialogAddressIndirect
 			LDA $7EF450 : INC : STA $7EF450
 
-			REP #$20
+			SEP #$10 ; set 8-bit index registers
+
 			LDA GoalItemRequirement : BEQ ++
 			LDA !GOAL_COUNTER : INC : STA !GOAL_COUNTER
 			CMP GoalItemRequirement : !BLT ++
-			SEP #$30 ; set 8-bit index registers
 			LDA TurnInGoalItems : BNE ++
 				JSL.l ActivateGoal
 			++
-			SEP #$20 ; set 8-bit index registers
 
 			LDX.b #$01 : BRA .done
 		+
@@ -333,15 +332,12 @@ AddReceivedItemExpandedGetItem:
 		BRA .multi_collect
 	+ CMP.b #$6C : BNE + ; Goal Collectable (Multi/Power Star) Alternate Graphic
 		.multi_collect
-		REP #$20
 		LDA GoalItemRequirement : BEQ ++
 		LDA !GOAL_COUNTER : INC : STA !GOAL_COUNTER
 		CMP GoalItemRequirement : !BLT ++
-		SEP #$20
 		LDA TurnInGoalItems : BNE ++
 				JSL.l ActivateGoal
 		++
-		SEP #$20
 		BRL .done
 	+ CMP.b #$6D : BNE + ; Server Request F0
 		JSL.l ItemGetServiceRequest_F0
