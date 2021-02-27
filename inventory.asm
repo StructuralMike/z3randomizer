@@ -758,9 +758,10 @@ RTS
 Link_ReceiveItem_HUDRefresh:
 	LDA $7EF343 : BNE + ; skip if we have bombs
 	LDA $7EF375 : BEQ + ; skip if we are filling no bombs
-	LDA $7EF370 : BEQ + ; skip if we can't have bombs
-		DEC : STA $7EF375 ; decrease bomb fill count
-		LDA.b #$01 : STA $7EF343 ; increase actual bomb count
+		LDA $7EF370
+		!ADD.l FuturoBombs : BEQ + ; skip if we can't have bombs
+			DEC : STA $7EF375 ; decrease bomb fill count
+			LDA.b #$01 : STA $7EF343 ; increase actual bomb count
 	+
 	JSL.l HUD_RefreshIconLong ; thing we wrote over
 	JSL.l PostItemGet
@@ -773,6 +774,8 @@ RTL
 HandleBombAbsorbtion:
 	STA $7EF375 ; thing we wrote over
 	LDA $0303 : BNE + ; skip if we already have some item selected
+		LDA $7EF370
+		!ADD.l FuturoBombs : BEQ + ; skip if we can't have bombs
 		LDA.b #$04 : STA $0202 ; set selected item to bombs
 		LDA.b #$01 : STA $0303 ; set selected item to bombs
 		JSL.l HUD_RebuildLong
