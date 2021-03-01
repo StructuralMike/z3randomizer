@@ -89,7 +89,7 @@ if __name__ == '__main__':
         result, new_rom_data = asar_patch(os.path.abspath('LTTP_RND_GeneralBugfixes.asm'), old_rom_data)
         
         if result:
-            with open('../working.sfc', 'wb') as stream:
+            with open('../basepatch.sfc', 'wb') as stream:
                 stream.write(new_rom_data)
             print("Success\n")
             basemd5 = hashlib.md5()
