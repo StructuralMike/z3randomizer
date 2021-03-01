@@ -147,44 +147,59 @@ SEP #$30
 	AND #$FFF8
 	TAX						 ; end of crap
 
-	LDA FuturoMagic
-	!ADD.l $7EF37B : BNE + : RTL : + ; Lock magic meter graphics when we can't use magic
-	LDA !INFINITE_MAGIC : AND.w #$00FF : BNE + : BRL .green : +
-	SEP #$20 : LDA.b #$80 : STA $7EF36E : REP #$30 ; set magic to max
-	LDX.w #$0080 ; load full magic meter graphics
-	LDA $1A : AND.w #$000C : LSR #2
-	BEQ .red
-	CMP.w #0001 : BEQ .yellow
-	CMP.w #0002 : BNE + : BRL .green : +
-	.blue
-	    LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$EFFF : STA $7EC746
-	    LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$EFFF : STA $7EC786
-	    LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$EFFF : STA $7EC7C6
-	    LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$EFFF : STA $7EC806
-		RTL
-	.red
-	    LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$E7FF : STA $7EC746
-	    LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$E7FF : STA $7EC786
-	    LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$E7FF : STA $7EC7C6
-	    LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$E7FF : STA $7EC806
-		RTL
-	.yellow
-	    LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$EBFF : STA $7EC746
-	    LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$EBFF : STA $7EC786
-	    LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$EBFF : STA $7EC7C6
-	    LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$EBFF : STA $7EC806
-		RTL
-	.orange
-	    LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$E3FF : STA $7EC746
-	    LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$E3FF : STA $7EC786
-	    LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$E3FF : STA $7EC7C6
-	    LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$E3FF : STA $7EC806
-		RTL
-	.green
-	    LDA !DrawMagicMeter_mp_tilemap+0, X : STA $7EC746
-	    LDA !DrawMagicMeter_mp_tilemap+2, X : STA $7EC786
-	    LDA !DrawMagicMeter_mp_tilemap+4, X : STA $7EC7C6
-	    LDA !DrawMagicMeter_mp_tilemap+6, X : STA $7EC806
+	LDA FuturoMagic : !ADD.l $7EF37B : BNE .hasmagic ; Only draw magic meter when we can use magic
+	LDY #$7E : PHB : PHY : PLB ; Set B register to 0x7E
+	; Remove Magic Meter (Independent parts)
+	LDA #$0000
+	STA $C704 : STA $C706
+	STA $C744 : STA $C746
+	STA $C784 : STA $C786
+	STA $C7C4 : STA $C7C6
+	STA $C804 : STA $C806 : STA $C808
+	STA $C844 : STA $C846 : STA $C848
+	; Remove Magic Meter from Item Box
+	LDA #$685C : STA $C708
+	LDA #$685D : STA $C748 : STA $C788
+	LDA #$E85C : STA $C7C8
+	PLB
+	RTL
+	.hasmagic
+		LDA !INFINITE_MAGIC : AND.w #$00FF : BNE + : BRL .green : +
+		SEP #$20 : LDA.b #$80 : STA $7EF36E : REP #$30 ; set magic to max
+		LDX.w #$0080 ; load full magic meter graphics
+		LDA $1A : AND.w #$000C : LSR #2
+		BEQ .red
+		CMP.w #0001 : BEQ .yellow
+		CMP.w #0002 : BNE + : BRL .green : +
+		.blue
+			LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$EFFF : STA $7EC746
+			LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$EFFF : STA $7EC786
+			LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$EFFF : STA $7EC7C6
+			LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$EFFF : STA $7EC806
+			RTL
+		.red
+			LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$E7FF : STA $7EC746
+			LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$E7FF : STA $7EC786
+			LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$E7FF : STA $7EC7C6
+			LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$E7FF : STA $7EC806
+			RTL
+		.yellow
+			LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$EBFF : STA $7EC746
+			LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$EBFF : STA $7EC786
+			LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$EBFF : STA $7EC7C6
+			LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$EBFF : STA $7EC806
+			RTL
+		.orange
+			LDA !DrawMagicMeter_mp_tilemap+0, X : AND.w #$E3FF : STA $7EC746
+			LDA !DrawMagicMeter_mp_tilemap+2, X : AND.w #$E3FF : STA $7EC786
+			LDA !DrawMagicMeter_mp_tilemap+4, X : AND.w #$E3FF : STA $7EC7C6
+			LDA !DrawMagicMeter_mp_tilemap+6, X : AND.w #$E3FF : STA $7EC806
+			RTL
+		.green
+			LDA !DrawMagicMeter_mp_tilemap+0, X : STA $7EC746
+			LDA !DrawMagicMeter_mp_tilemap+2, X : STA $7EC786
+			LDA !DrawMagicMeter_mp_tilemap+4, X : STA $7EC7C6
+			LDA !DrawMagicMeter_mp_tilemap+6, X : STA $7EC806
 RTL
 
 ;================================================================================
