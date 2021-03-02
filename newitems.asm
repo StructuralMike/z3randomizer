@@ -501,6 +501,16 @@ AddReceivedItemExpanded:
 			LDA $7EF37B : BEQ +++
 				LDA.b #$4F : STA $02D8
 			+++ : BRL .done
+		++ : CMP.b #$27 : BEQ .isBomb ; one bomb
+			CMP.b #$28 : BEQ .isBomb ; three bombs
+			CMP.b #$31 : BEQ .isBomb ; ten bombs
+			BRA .notBomb
+			.isBomb
+				LDA $7EF370 : !ADD.l StartingMaxBombs : BNE .hasBombs ; skip if we can't have bombs
+					LDA.b #$35 : STA $02D8 ; replace with 5 rupees
+					BRL .done
+				.hasBombs
+			.notBomb
 		++ : CMP.b #$5E : BNE ++ ; Progressive Sword
 			LDA !MULTIWORLD_ITEM_PLAYER_ID : BNE +
 			LDA $7EF359 : CMP.l ProgressiveSwordLimit : !BLT +
