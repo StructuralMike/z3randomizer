@@ -1,5 +1,6 @@
 ;================================================================================
 ; Fairy Changes & Fixes
+!MAGIC_UPGRADES = "$7EF37B"
 ;--------------------------------------------------------------------------------
 RefillHealthPlusMagic:
     LDA BigFairyHealth : STA $7EF372
@@ -7,8 +8,7 @@ RTL
 ;--------------------------------------------------------------------------------
 RefillHealthPlusMagic8bit:
     LDA BigFairyHealth : STA $7EF372
-	LDA FuturoMagic
-	!ADD.l $7EF37B : BEQ + ; No magic refill if we can't use magic
+	LDA !MAGIC_UPGRADES : !ADD.l FuturoMagic : BEQ +
     LDA BigFairyMagic : STA $7EF373
 	+
 RTL
@@ -18,9 +18,8 @@ CheckFullHealth:
         LDA $7EF36D : CMP $7EF36C : BNE .player_hp_not_full_yet
     +
     LDA BigFairyMagic : BEQ +
-		LDA FuturoMagic
-		!ADD.l $7EF37B : BEQ + ; No magic refill if we can't use magic
-        LDA $7EF36E : CMP.b #$80 : BNE .player_mp_not_full_yet
+		LDA !MAGIC_UPGRADES : !ADD.l FuturoMagic : BEQ +
+	    LDA $7EF36E : CMP.b #$80 : BNE .player_mp_not_full_yet
     +
     LDA.b #$00
 RTL

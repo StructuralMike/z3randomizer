@@ -1,9 +1,10 @@
 ;================================================================================
 ; Capacity Logic
+!MAGIC_UPGRADES = "$7EF37B"
 ;================================================================================
 IncrementMagic:
 	; Refill magic if we can actually use magic
-	LDA FuturoMagic : !ADD.l $7EF37B : BNE .hasMagic
+	LDA !MAGIC_UPGRADES : !ADD.b FuturoMagic : BNE .hasMagic
 	LDA.b #$00 : STA $7EF36E : STA $7EF373
 	RTL
 
@@ -30,8 +31,7 @@ RTL
 !BOMB_CURRENT = "$7EF343"
 ;--------------------------------------------------------------------------------
 IncrementBombs:
-    LDA !BOMB_UPGRADES ; get bomb upgrades
-	!ADD.l StartingMaxBombs : BEQ + ; skip if we can't have bombs
+    LDA !BOMB_UPGRADES : !ADD.l StartingMaxBombs : BEQ + ; skip if we can't have bombs
 		DEC
 
 		CMP !BOMB_CURRENT

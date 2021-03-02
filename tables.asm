@@ -413,11 +413,11 @@ db $00 ; #$00 = Off (default) - #$01 = On
 ;--------------------------------------------------------------------------------
 org $30808D ; PC 0x18008D
 FuturoBombs:
-db $01 ; #$00 = NoStartingBombs - #$01 = StartingBombs (default)
+db #$01 ; #00 = NoStartingBombs - #01 = StartingBombs (default)
 ;--------------------------------------------------------------------------------
 org $30808E ; PC 0x18008E
 FuturoMagic:
-db $01 ; #$00 = NoStartingMagic - #$01 = StartingMagic (default)
+db #$01 ; #00 = NoStartingMagic - #01 = StartingMagic (default)
 ;--------------------------------------------------------------------------------
 ; 0x18008F - 0x18008F (unused)
 ;--------------------------------------------------------------------------------
