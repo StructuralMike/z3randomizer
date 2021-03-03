@@ -2,29 +2,12 @@
 ; Capacity Logic
 !MAGIC_UPGRADES = "$7EF37B"
 ;================================================================================
-IncrementMagic:
-	; Refill magic if we can actually use magic
-	LDA !MAGIC_UPGRADES : !ADD.b FuturoMagic : BNE .hasMagic
-	LDA.b #$00 : STA $7EF36E : STA $7EF373
-	RTL
-
-	; Check if current magic power is full
-	.hasMagic
-	LDA $7EF36E : CMP.b #$80 : BCC .magicNotFull 	
-
-	; If it is full, stop refilling 
-	LDA.b #$80 : STA $7EF36E
-	LDA.b #$00 : STA $7EF373
-	RTL
-
-	.magicNotFull
-	LDA $7EF373 : DEC A : STA $7EF373
-	LDA $7EF36E : INC A : STA $7EF36E
-	LDA $1A : AND.b #$03 : BNE .doneWithMagicRefill ; if((frame_counter % 4) != 0) don't refill this frame
-	LDA $012E : BNE .doneWithMagicRefill ; Is this sound channel in use?
-	LDA.b #$2D : STA $012E; Play the magic refill sound effect
-
-	.doneWithMagicRefill
+IncrementMagic: 
+	; Only continue magic refill if we can actually use magic (variable != 0)
+	LDA $7EF373 : BEQ +
+		LDA !MAGIC_UPGRADES : !ADD.b FuturoMagic : BNE +
+		LDA.b #$00 : STA $7EF36E : STA $7EF373 : BEQ +
+	+
 RTL
 ;--------------------------------------------------------------------------------
 !BOMB_UPGRADES = "$7EF370"

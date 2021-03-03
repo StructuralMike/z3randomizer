@@ -1054,9 +1054,8 @@ db #$1E
 ;================================================================================
 ; Magic, Bomb & Arrow Capacity Updates
 ;--------------------------------------------------------------------------------
-org $0DDB98 ; <- 6DB98 - headsup_display.asm:66 (LDA $7EF36E : CMP.b #$80)
+org $0DDB92 ; <- 6DB98 - headsup_display.asm:66 (LDA $7EF373)
 JSL.l IncrementMagic
-NOP #34
 ;--------------------------------------------------------------------------------
 org $0DDC27 ; <- 6DC27 - headsup_display.asm:151 (LDA $7EF370 : TAY)
 JSL.l IncrementBombs
