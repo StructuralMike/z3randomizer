@@ -8,9 +8,7 @@ RTL
 ;--------------------------------------------------------------------------------
 RefillHealthPlusMagic8bit:
     LDA BigFairyHealth : STA $7EF372
-	LDA !MAGIC_UPGRADES : !ADD.l FuturoMagic : BEQ +
     LDA BigFairyMagic : STA $7EF373
-	+
 RTL
 ;--------------------------------------------------------------------------------
 CheckFullHealth:
