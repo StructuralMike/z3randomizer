@@ -1,7 +1,7 @@
 ;================================================================================
 ; Capacity Logic
-!MAGIC_UPGRADES = "$7EF37B"
 ;================================================================================
+!MAGIC_UPGRADES = "$7EF37B"
 IncrementMagic: 
 	; Only continue magic refill if we can actually use magic (variable != 0)
 	LDA $7EF373 : BEQ +
