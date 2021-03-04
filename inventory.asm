@@ -716,11 +716,11 @@ RTS
 ;--------------------------------------------------------------------------------
 Link_ReceiveItem_HUDRefresh:
 	LDA $7EF343 : BNE + ; skip if we have bombs
-	LDA $7EF375 : BEQ + ; skip if we are filling no bombs
-		DEC : STA $7EF375 ; decrease bomb fill count
-		LDA.b #$01 : STA $7EF343 ; increase actual bomb count
+	LDA $7EF370 : !ADD.l StartingMaxBombs : BEQ + ; skip if we can't have bombs
+		LDA $7EF375 : BEQ + ; skip if we are filling no bombs
+			DEC : STA $7EF375 ; decrease bomb fill count
+			LDA.b #$01 : STA $7EF343 ; increase actual bomb count
 	+
-
 	JSL.l HUD_RefreshIconLong ; thing we wrote over
 	JSL.l PostItemGet
 RTL
@@ -732,9 +732,10 @@ RTL
 HandleBombAbsorbtion:
 	STA $7EF375 ; thing we wrote over
 	LDA $0303 : BNE + ; skip if we already have some item selected
-		LDA.b #$04 : STA $0202 ; set selected item to bombs
-		LDA.b #$01 : STA $0303 ; set selected item to bombs
-		JSL.l HUD_RebuildLong
+		LDA $7EF370 : !ADD.l StartingMaxBombs : BEQ + ; skip if we can't have bombs
+			LDA.b #$04 : STA $0202 ; set selected item to bombs
+			LDA.b #$01 : STA $0303 ; set selected item to bombs
+			JSL.l HUD_RebuildLong
 	+
 RTL
 ;--------------------------------------------------------------------------------
@@ -1040,12 +1041,15 @@ RTL
 ;--------------------------------------------------------------------------------
 DrawMagicHeader:
 	LDA $7EF37B : AND.w #$00FF : CMP.w #$0002 : BEQ .quarterMagic
+	LDA.l Futuro : AND.w #$00FF : BNE + ; Draw 1/1 magic on futuromagic
 	.halfMagic
     LDA.w #$28F7 : STA $7EC704
     LDA.w #$2851 : STA $7EC706
     LDA.w #$28FA : STA $7EC708
+	+
 RTL
 	.quarterMagic
+	LDA.l Futuro : AND.w #$00FF : BNE .halfMagic ; Draw 1/2 magic on futuromagic
     LDA.w #$28F7 : STA $7EC704
     LDA.w #$2800 : STA $7EC706
     LDA.w #$2801 : STA $7EC708
