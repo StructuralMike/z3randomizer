@@ -3,18 +3,18 @@
 ;================================================================================
 !MAGIC_UPGRADES = "$7EF37B"
 IncrementMagic: 
-	; Only continue magic refill if we can actually use magic
 	LDA $7EF373	: BNE +
 		RTL
-	+
-	LDA.l Futuro : BNE +
-		LDA.b #$01 : RTL
-	+
-	LDA !MAGIC_UPGRADES : BEQ +
+	+	; Only continue magic refill if we can actually use magic
+	LDA.l Futuro : BEQ .refill
+		LDA !MAGIC_UPGRADES : BEQ .noRefill
+
+	.refill
+		LDA.b #$01
 		RTL
-	+
-	LDA.b #$00 : STA $7EF36E : STA $7EF373
-RTL
+	.noRefill
+		LDA.b #$00 : STA $7EF36E : STA $7EF373
+		RTL
 ;--------------------------------------------------------------------------------
 BossMagicRefill:
 	; Only continue magic refill if we can actually use magic
