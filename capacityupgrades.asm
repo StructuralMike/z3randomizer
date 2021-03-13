@@ -16,6 +16,16 @@ IncrementMagic:
 	LDA.b #$00 : STA $7EF36E : STA $7EF373
 RTL
 ;--------------------------------------------------------------------------------
+BossMagicRefill:
+	; Only continue magic refill if we can actually use magic
+	LDA.l Futuro : BEQ .canUseMagic
+		LDA !MAGIC_UPGRADES : BNE .canUseMagic
+			LDA.b #$80
+			RTL
+	.canUseMagic
+	LDA $7EF36E
+	RTL
+;--------------------------------------------------------------------------------
 !BOMB_UPGRADES = "$7EF370"
 !BOMB_CURRENT = "$7EF343"
 ;--------------------------------------------------------------------------------

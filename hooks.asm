@@ -1043,6 +1043,9 @@ db #$1E
 org $0DDB92 ; <- 6DB98 - headsup_display.asm:66 (LDA $7EF373)
 JSL.l IncrementMagic
 ;--------------------------------------------------------------------------------
+org $0DF1B5 ; <- 6F1B5 - headsup_display.asm:495 (LDA $7EF36E)
+JSL.l BossMagicRefill
+;--------------------------------------------------------------------------------
 org $0DDC27 ; <- 6DC27 - headsup_display.asm:151 (LDA $7EF370 : TAY)
 JSL.l IncrementBombs
 NOP #15
