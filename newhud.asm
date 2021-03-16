@@ -138,7 +138,31 @@ SEP #$30
 ; Draw Magic Meter
 !INFINITE_MAGIC = "$7F50CA"
 !DrawMagicMeter_mp_tilemap = "$0DFE0F" 
-;--------------------------------------------------------------------------------
+!MAGIC_UPGRADES = "$7EF37B"
+--------------------------------------------------------------------------------
+
+	LDA.l Futuro : AND #$00FF : BEQ .hasMagic
+	LDA !MAGIC_UPGRADES : AND #$00FF : BNE .hasMagic
+	LDA $7EC788 : CMP #$007F : BEQ + ; Don't refresh if nothing has changed.
+		LDY #$7E : PHB : PHY : PLB ; Set B register to 0x7E
+		; Remove Magic Meter (Independent parts)
+		LDA #$007F
+		STA $C704 : STA $C706
+		STA $C744 : STA $C746
+		STA $C784 : STA $C786
+		STA $C7C4 : STA $C7C6
+		STA $C804 : STA $C806 : STA $C808
+		STA $C844 : STA $C846 : STA $C848
+
+		; Remove Magic Meter from Item Box
+		LDA #$685C : STA $C708
+		LDA #$685D : STA $C748 : STA $C788
+		LDA #$E85C : STA $C7C8
+		PLB
+	+
+	RTL
+
+	.hasMagic
 	LDA $7EF36E : AND #$00FF ; crap we wrote over when placing the hook for OnDrawHud
 	!ADD #$0007
 	AND #$FFF8

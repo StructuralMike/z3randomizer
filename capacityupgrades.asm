@@ -1,19 +1,45 @@
 ;================================================================================
 ; Capacity Logic
 ;================================================================================
+!MAGIC_UPGRADES = "$7EF37B"
+IncrementMagic: 
+	LDA $7EF373	: BNE +
+		RTL
+	+	; Only continue magic refill if we can actually use magic
+	LDA.l Futuro : BEQ .refill
+		LDA !MAGIC_UPGRADES : BEQ .noRefill
+
+	.refill
+		LDA.b #$01
+		RTL
+	.noRefill
+		LDA.b #$00 : STA $7EF36E : STA $7EF373
+		RTL
+;--------------------------------------------------------------------------------
+BossMagicRefill:
+	; Only continue magic refill if we can actually use magic
+	LDA.l Futuro : BEQ .canUseMagic
+		LDA !MAGIC_UPGRADES : BNE .canUseMagic
+			LDA.b #$80
+			RTL
+	.canUseMagic
+	LDA $7EF36E
+	RTL
+;--------------------------------------------------------------------------------
 !BOMB_UPGRADES = "$7EF370"
 !BOMB_CURRENT = "$7EF343"
 ;--------------------------------------------------------------------------------
 IncrementBombs:
-    LDA !BOMB_UPGRADES ; get bomb upgrades
-	!ADD.l StartingMaxBombs : DEC
+    LDA !BOMB_UPGRADES : !ADD.l StartingMaxBombs : BEQ + ; skip if we can't have bombs
+		DEC
 
-    CMP !BOMB_CURRENT
-	
-	!BLT +
-    	LDA !BOMB_CURRENT
-		CMP.b #99 : !BGE +
-		INC : STA !BOMB_CURRENT
+		CMP !BOMB_CURRENT
+		
+		!BLT +
+			LDA !BOMB_CURRENT
+			CMP.b #99 : !BGE +
+			INC : STA !BOMB_CURRENT
+		+
 	+
 RTL
 ;--------------------------------------------------------------------------------
