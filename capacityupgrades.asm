@@ -6,7 +6,7 @@ IncrementMagic:
 	LDA $7EF373	: BNE +
 		RTL
 	+	; Only continue magic refill if we can actually use magic
-	LDA.l Futuro : BEQ .refill
+	LDA.l FuturoMagic : BEQ .refill
 		LDA !MAGIC_UPGRADES : BEQ .noRefill
 
 	.refill
@@ -18,7 +18,7 @@ IncrementMagic:
 ;--------------------------------------------------------------------------------
 BossMagicRefill:
 	; Only continue magic refill if we can actually use magic
-	LDA.l Futuro : BEQ .canUseMagic
+	LDA.l FuturoMagic : BEQ .canUseMagic
 		LDA !MAGIC_UPGRADES : BNE .canUseMagic
 			LDA.b #$80
 			RTL

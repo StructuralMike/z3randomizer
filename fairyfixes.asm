@@ -16,7 +16,7 @@ CheckFullHealth:
         LDA $7EF36D : CMP $7EF36C : BNE .player_hp_not_full_yet
     +
     LDA BigFairyMagic : BEQ ++
-		LDA.l Futuro : BEQ +
+		LDA.l FuturoMagic : BEQ +
 			LDA !MAGIC_UPGRADES : BEQ ++
 				+
 				LDA $7EF36E : CMP.b #$80 : BNE .player_mp_not_full_yet

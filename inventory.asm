@@ -1090,7 +1090,7 @@ RTL
 ;--------------------------------------------------------------------------------
 DrawMagicHeader:
 	LDA $7EF37B : AND.w #$00FF : CMP.w #$0002 : BEQ .quarterMagic
-	LDA.l Futuro : AND.w #$00FF : BNE + ; Draw 1/1 magic on futuromagic
+	LDA.l FuturoMagic : AND.w #$00FF : BNE + ; Draw 1/1 magic on futuromagic
 	.halfMagic
     LDA.w #$28F7 : STA $7EC704
     LDA.w #$2851 : STA $7EC706
@@ -1098,7 +1098,7 @@ DrawMagicHeader:
 	+
 RTL
 	.quarterMagic
-	LDA.l Futuro : AND.w #$00FF : BNE .halfMagic ; Draw 1/2 magic on futuromagic
+	LDA.l FuturoMagic : AND.w #$00FF : BNE .halfMagic ; Draw 1/2 magic on futuromagic
     LDA.w #$28F7 : STA $7EC704
     LDA.w #$2800 : STA $7EC706
     LDA.w #$2801 : STA $7EC708

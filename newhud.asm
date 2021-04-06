@@ -141,7 +141,7 @@ SEP #$30
 !MAGIC_UPGRADES = "$7EF37B"
 --------------------------------------------------------------------------------
 
-	LDA.l Futuro : AND #$00FF : BEQ .hasMagic
+	LDA.l FuturoMagic : AND #$00FF : BEQ .hasMagic
 	LDA !MAGIC_UPGRADES : AND #$00FF : BNE .hasMagic
 	LDA $7EC788 : CMP #$007F : BEQ + ; Don't refresh if nothing has changed.
 		LDY #$7E : PHB : PHY : PLB ; Set B register to 0x7E

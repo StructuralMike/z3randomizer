@@ -52,7 +52,7 @@ RTL
 !BUSY_MAGIC = $7F5093
 !MAGIC_UPGRADES = "$7EF37B"
 RefillMagic:
-	LDA.l Futuro : BEQ +
+	LDA.l FuturoMagic : BEQ +
 		LDA !MAGIC_UPGRADES : BEQ .itsFull ; Only refill magic if we can use magic
 	+
 	REP #$20 ; set 16-bit accumulator

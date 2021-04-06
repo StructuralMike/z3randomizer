@@ -381,10 +381,14 @@ PreopenGanonsTower:
 db $00 ; #$00 = Off (default) - #$01 = On
 ;--------------------------------------------------------------------------------
 org $30808D ; PC 0x18008D
-Futuro:
-db #$00 ; #00 = Default - #01 = Futuro Mode Enabled
+FuturoMagic:
+db #$00 ; #00 = Default - #01 = Futuro Magic Mode Enabled
 ;--------------------------------------------------------------------------------
-; 0x18008E - 0x18008F (unused)
+org $30808E ; PC 0x18008E
+FuturoPortal:
+db #$00 ; #00 = Default - #01 = Futuro Agahnim Portal Enabled
+;--------------------------------------------------------------------------------
+; 0x18008F - 0x18008F (unused)
 ;--------------------------------------------------------------------------------
 org $308090 ; PC 0x180090 - 0x180097
 ProgressiveSwordLimit:

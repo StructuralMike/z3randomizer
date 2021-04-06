@@ -22,7 +22,7 @@ InitOpenMode:
 RTL
 ;--------------------------------------------------------------------------------
 MaybeSetPostAgaWorldState:
-	LDA.l Futuro : BEQ + ; Skip if not enabled
+	LDA.l FuturoPortal : BEQ + ; Skip if not enabled
 		LDA.b #$03 : STA $7EF3C5 ; Go to post-aga phase
 ;		LDA $7EF282 : ORA.b #$20 : STA $7EF282 ; make lumberjack tree accessible
 	+
